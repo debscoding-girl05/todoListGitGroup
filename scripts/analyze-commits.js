@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+import Groq from "groq-sdk";
 import sgMail from "@sendgrid/mail";
 import { execSync } from "child_process";
 import { configDotenv } from "dotenv";
@@ -7,10 +7,9 @@ import fs from "fs";
 // Load environment variables from .env file
 configDotenv();
 
-// Initialize OpenAI
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  organization: "org-FRrNtl6eAOH5jh47V5nQwvnb",
+// Initialize Groq
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY, 
 });
 
 // Initialize SendGrid
@@ -18,8 +17,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 async function analyzeCommit(commitMessage, diff) {
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+    const response = await groq.chat.completions.create({
       messages: [
         {
           role: "system",
@@ -31,11 +29,12 @@ async function analyzeCommit(commitMessage, diff) {
           content: `Analyze this commit:\nMessage: ${commitMessage}\nChanges:\n${diff}`,
         },
       ],
+      model: "llama3-8b-8192", // Use the appropriate model here
       temperature: 0.7,
       max_tokens: 500,
     });
 
-    return response.choices[0]?.message.content;
+    return response.choices[0]?.delta?.content || "Unable to analyze commit";
   } catch (error) {
     console.error("Error analyzing commit:", error);
     return "Unable to analyze commit";
