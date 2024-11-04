@@ -1,6 +1,7 @@
 {
   "name": "todolistgitgroup",
   "version": "1.0.0",
+  "type": "module",
   "description": "todolist",
   "main": "script.js",
   "scripts": {
@@ -14,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
-    "openai": "^4.0.0"
+    "dotenv": "^16.4.5",
+    "openai": "^4.70.2"
   }
 }
