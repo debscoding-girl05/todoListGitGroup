@@ -6,6 +6,7 @@ import fs from "fs";
 
 // Load environment variables from .env file
 configDotenv();
+console.log("GROQ_API_KEY:", process.env.GROQ_API_KEY);
 
 // Initialize Groq
 const groq = new Groq({
@@ -29,17 +30,24 @@ async function analyzeCommit(commitMessage, diff) {
           content: `Analyze this commit:\nMessage: ${commitMessage}\nChanges:\n${diff}`,
         },
       ],
-      model: "llama3-8b-8192", // Use the appropriate model here
+      model: "llama3-8b-8192",
       temperature: 0.7,
       max_tokens: 500,
     });
 
-    return response.choices[0]?.delta?.content || "Unable to analyze commit";
+    console.log("Response from Groq:", response); // Log full response for debugging
+
+    // Accessing the content of the message
+    return response.choices[0]?.message?.content || "No content returned";
   } catch (error) {
-    console.error("Error analyzing commit:", error);
+    console.error(
+      "Error analyzing commit:",
+      error.response ? error.response.data : error
+    );
     return "Unable to analyze commit";
   }
 }
+
 
 async function sendEmail(to, analysis, commitHash) {
   const msg = {
