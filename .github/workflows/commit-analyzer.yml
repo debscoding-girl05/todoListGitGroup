@@ -1,0 +1,33 @@
+name: AI Commit Analyzer
+
+on:
+  push:
+    branches:
+      - '**'  # This will trigger on all branches
+  pull_request:
+    branches:  
+    - '**'  # This will trigger on all branches
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run commit analysis
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          SENDGRID_VERIFIED_SENDER: ${{secrets.SENDGRID_VERIFIED_SENDER}}
+        run: node scripts/analyze-commits.js
