@@ -1,0 +1,52 @@
+/* Background image */
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('images/2.jpg'); /* Remplace 'background.jpg' par le chemin de ton image */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    
+}
+
+/* Centered title */
+h1 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+/* Contact container styling */
+.contact-container {
+    background-color: rgba(30, 30, 30, 0.85); /* Dark gray with transparency */
+    padding: 20px;
+    width: 350px;
+    border: 2px solid #444;
+    border-radius: 0;
+    text-align: center;
+}
+
+/* Contact info styling */
+.contact-info {
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+
+.contact-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #8fdff1;
+    color: white;
+    text-decoration: none;
+    border: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.contact-link:hover {
+    background-color: #218838;
+}
