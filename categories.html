@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+   
+  <div class="container">
+    <h1>Hello John</h1>
+    <div class="todo-item">
+      <button>Personal (7 Tasks)</button>
+    </div>
+    <div class="todo-item">
+      <button>Work (3 Tasks)</button>
+    </div>
+    <div class="todo-item">
+      <button>Shopping (3 Tasks)</button>
+    </div>
+    <div class="todo-item">
+      <button>Coding (3 Tasks)</button>
+    </div>
+    <div class="todo-item">
+      <button>Health (3 Tasks)</button>
+  
+  <script>
+    const buttons = document.querySelectorAll('.todo-item button');
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        alert(`Viewing tasks for "${button.previousElementSibling.textContent}"`);
+      });
+    });
+  </script>
+</body>
+</html>
