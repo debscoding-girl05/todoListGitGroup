@@ -99,14 +99,7 @@ async function sendEmail(
     subject: `Commit Analysis Report - ${commitHash.substring(0, 7)}`,
     text: explanation,
     html: `<p>${explanation.replace(/\n/g, "<br>")}</p>`,
-    attachments: [
-      {
-        content: fs.readFileSync(filePath).toString("base64"),
-        filename: `commit_${commitHash.substring(0, 7)}${extension}`,
-        type: "text/plain",
-        disposition: "attachment",
-      },
-    ],
+    
   };
 
   try {
