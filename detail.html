@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liste de Tâches</title>
+  <link rel="stylesheet" href="detail.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="https://img.icons8.com/ios-filled/50/000000/work.png" alt="Work Icon">
+      <h2>3 Tâches à faire</h2>
+    </div>
+    <ul>
+      <li><input type="checkbox" onclick="this.parentNode.classList.toggle('checked')"> Préparer la présentation pour la réunion ce jeudi</li>
+      <li><input type="checkbox" onclick="this.parentNode.classList.toggle('checked')"> Envoyer des e-mails de suivi ce jeudi</li>
+      <li><input type="checkbox" onclick="this.parentNode.classList.toggle('checked')"> Préparer l'agenda pour la réunion d'équipe ce vendredi</li>
+    </ul>
+    <button class="add-task">+</button>
+  </div>
+</body>
+</html>
