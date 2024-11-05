@@ -115,9 +115,10 @@ li {
   margin-right: 2em;
 }
 
-a {
-  color: #fff;
+a:hover {
+  opacity:0.6;
   text-decoration: none;
+  color:rgb(89, 89, 225)
 }
 
 .contact {

@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-import Groq from "groq-sdk"; 
+import Groq from "groq-sdk";
 import sgMail from "@sendgrid/mail";
 import fs from "fs";
 import path from "path";
@@ -12,6 +12,12 @@ configDotenv();
 const app = express();
 app.use(bodyParser.json());
 
+// Check for API keys at startup
+if (!process.env.GROQ_API_KEY || !process.env.SENDGRID_API_KEY) {
+  console.error("API keys for Groq and/or SendGrid are missing.");
+  process.exit(1);
+}
+
 // Initialize Groq or Llama AI service
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -21,7 +27,7 @@ const groq = new Groq({
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 app.post("/webhook", async (req, res) => {
-  const { commits, repository } = req.body;
+  const { commits } = req.body;
 
   for (const commit of commits) {
     const {
@@ -34,71 +40,81 @@ app.post("/webhook", async (req, res) => {
     const committerEmail = author.email;
     const fileChanges = added.concat(modified); // All changed files
 
-    let modifiedCode = ""; // Placeholder for diff code
+    const attachments = []; // Array to hold multiple attachments
 
-    // Retrieve and analyze the modified code
     for (const file of fileChanges) {
-      const extension = path.extname(file);
+      const extension = path.extname(file) || ".txt"; // Default to .txt if no extension
 
-      // Simulate fetching diff, e.g., via `git show` in a real setup
-      modifiedCode += `// Changes in ${file}\n...file diff content here...`;
+      // Simulate fetching diff content; replace this with real diff content retrieval
+      const modifiedCode = `// Changes in ${file}\n...actual file diff content here...\n`;
+
+      // Analyze the code with Groq/Llama and request corrections
+      const analysis = await groq.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are an expert reviewing code changes. Provide improvements if needed.",
+          },
+          {
+            role: "user",
+            content: `Commit message: ${commitMessage}\nChanges in ${file}:\n${modifiedCode}\nPlease suggest corrections if applicable.`,
+          },
+        ],
+        model: "llama3-8b-8192",
+        temperature: 0.7,
+        max_tokens: 500,
+      });
+
+      const analysisContent =
+        analysis.choices[0]?.message?.content || "No analysis available";
+      const correctedCode =
+        extractCorrectedCode(analysisContent) || modifiedCode;
+
+      // Save the corrected code to a temporary file with the appropriate extension
+      const filePath = path.join(
+        __dirname,
+        `corrected_${path.basename(file)}_${commitHash.substring(
+          0,
+          7
+        )}${extension}`
+      );
+      fs.writeFileSync(filePath, correctedCode);
+
+      // Attach the file
+      attachments.push({
+        content: fs.readFileSync(filePath).toString("base64"),
+        filename: path.basename(filePath),
+        type: "text/plain",
+        disposition: "attachment",
+      });
+
+      // Clean up the temporary file after it's read into memory
+      fs.unlinkSync(filePath);
     }
 
-    // Analyze commit using Groq or Llama
-    const analysis = await groq.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert reviewing code changes.",
-        },
-        {
-          role: "user",
-          content: `Commit message: ${commitMessage}\nChanges:\n${modifiedCode}`,
-        },
-      ],
-      model: "llama3-8b-8192",
-      temperature: 0.7,
-      max_tokens: 500,
-    });
-
-    const analysisContent =
-      analysis.choices[0]?.message?.content || "No analysis available";
-
-    // Send email with analysis and attachments
-    await sendEmail(
-      committerEmail,
-      analysisContent,
-      commitHash,
-      modifiedCode,
-      extension
-    );
+    // Send email with analysis and file attachments
+    await sendEmail(committerEmail, analysisContent, commitHash, attachments);
   }
 
   res.status(200).send("Webhook received");
 });
 
-// Function to send the email with the modified file attached
-async function sendEmail(to, analysis, commitHash, modifiedCode, extension) {
-  const filePath = path.join(
-    __dirname,
-    `commit_${commitHash.substring(0, 7)}${extension}`
-  );
-  fs.writeFileSync(filePath, modifiedCode);
+// Function to extract corrected code if available from analysis content
+function extractCorrectedCode(analysisContent) {
+  const codeMatch = analysisContent.match(/```[\s\S]*?```/);
+  return codeMatch ? codeMatch[0].replace(/```/g, "").trim() : null;
+}
 
+// Function to send the email with multiple attachments
+async function sendEmail(to, analysis, commitHash, attachments) {
   const msg = {
     to,
     from: process.env.SENDGRID_VERIFIED_SENDER,
     subject: `Commit Analysis Report - ${commitHash.substring(0, 7)}`,
     text: analysis,
     html: `<p>${analysis.replace(/\n/g, "<br>")}</p>`,
-    attachments: [
-      {
-        content: fs.readFileSync(filePath).toString("base64"),
-        filename: `commit_${commitHash.substring(0, 7)}${extension}`,
-        type: "text/plain",
-        disposition: "attachment",
-      },
-    ],
+    attachments, // Attachments array with multiple files
   };
 
   try {
@@ -106,8 +122,6 @@ async function sendEmail(to, analysis, commitHash, modifiedCode, extension) {
     console.log(`Email sent successfully for commit ${commitHash}`);
   } catch (error) {
     console.error("Error sending email:", error);
-  } finally {
-    fs.unlinkSync(filePath);
   }
 }
 

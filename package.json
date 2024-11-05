@@ -14,7 +14,6 @@
   "author": "group3keyce",
   "license": "ISC",
   "dependencies": {
-    "@ngrok/ngrok": "^1.4.1",
     "@sendgrid/mail": "^7.7.0",
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.5",
