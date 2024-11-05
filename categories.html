@@ -10,8 +10,18 @@
 </head>
 
 <body>
+
+    <nav>
+        <img src="images/paper.png" alt="Logo" class="logo">
+        <ul>
+            <li><a href="index.html">Tâche</a></li>
+            <li><a href="categories.html">Catégorie</a></li>
+            <li><a href="contact.html" class="contact">Contact</a></li>
+        </ul>
+    </nav>
+
   <div class="container my-5">
-    <h1 class="mb-4">Hello John</h1>
+    <h1 class="mb-4">Categories</h1>
     <div class="row g-3">
       <!-- Personal Category Card -->
       <div class="col-md-4">
@@ -62,7 +72,7 @@
     const buttons = document.querySelectorAll('.todo-card button');
     buttons.forEach(button => {
       button.addEventListener('click', () => {
-        alert(`Viewing tasks for "${button.textContent}"`);
+        window.location.href = 'index.html'
       });
     });
   </script>
