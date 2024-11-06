@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Categories</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <nav>
+        <img src="images/paper.png" alt="Logo" class="logo">
+        <ul>
+            <li><a href="index.html">Tâche</a></li>
+            <li><a href="categories.html">Catégorie</a></li>
+            <li><a href="contact.html" class="contact">Contact</a></li>
+        </ul>
+    </nav>
+
+  <div class="container my-5">
+    <h1 class="mb-4">Categories</h1>
+    <div class="row g-3">
+      <!-- Personal Category Card -->
+      <div class="col-md-4">
+        <div class="card todo-card d-flex align-items-center">
+          <img src="https://img.icons8.com/color/48/000000/person-male.png" alt="Personal Icon" class="todo-icon">
+          <button class="btn btn-link">Personal (7 Tasks)</button>
+        </div>
+      </div>
+      <!-- Work Category Card -->
+      <div class="col-md-4">
+        <div class="card todo-card d-flex align-items-center">
+          <img src="https://img.icons8.com/color/48/000000/briefcase.png" alt="Work Icon" class="todo-icon">
+          <button class="btn btn-link">Work (3 Tasks)</button>
+        </div>
+      </div>
+      <!-- Shopping Category Card -->
+      <div class="col-md-4">
+        <div class="card todo-card d-flex align-items-center">
+          <img src="https://img.icons8.com/color/48/000000/shopping-cart.png" alt="Shopping Icon" class="todo-icon">
+          <button class="btn btn-link">Shopping (3 Tasks)</button>
+        </div>
+      </div>
+      <!-- Coding Category Card -->
+      <div class="col-md-4">
+        <div class="card todo-card d-flex align-items-center">
+          <img src="https://img.icons8.com/color/48/000000/source-code.png" alt="Coding Icon" class="todo-icon">
+          <button class="btn btn-link">Coding (3 Tasks)</button>
+        </div>
+      </div>
+      <!-- Health Category Card -->
+      <div class="col-md-4">
+        <div class="card todo-card d-flex align-items-center">
+          <img src="https://img.icons8.com/color/48/000000/heart-health.png" alt="Health Icon" class="todo-icon">
+          <button class="btn btn-link">Health (3 Tasks)</button>
+        </div>
+      </div>
+      <!-- All Category Card -->
+      <div class="col-md-4">
+        <div class="card todo-card d-flex align-items-center">
+          <img src="https://img.icons8.com/color/48/000000/task.png" alt="All Tasks Icon" class="todo-icon">
+          <button class="btn btn-link">All Tasks</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('.todo-card button');
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        window.location.href = 'index.html'
+      });
+    });
+  </script>
+</body>
+
+</html>
