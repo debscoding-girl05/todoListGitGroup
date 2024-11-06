@@ -1,5 +1,5 @@
-// Sample to-do list data
-let todos = [
+// Load tasks from localStorage or initialize sample data
+let todos = JSON.parse(localStorage.getItem('todos')) || [
   {
     id: 1,
     name: "Alice",
@@ -60,12 +60,14 @@ function renderTable() {
 function toggleDone(id) {
   const todo = todos.find((todo) => todo.id === id);
   todo.done = !todo.done;
+  saveTodos(); // Save changes to localStorage
   renderTable();
 }
 
 // Function to delete a task
 function deleteTask(id) {
   todos = todos.filter((todo) => todo.id !== id);
+  saveTodos(); // Save changes to localStorage
   renderTable();
 }
 
@@ -114,6 +116,7 @@ document.getElementById("taskForm").addEventListener("submit", function (e) {
     });
   }
 
+  saveTodos(); // Save changes to localStorage
   renderTable();
   bootstrap.Modal.getInstance(document.getElementById("taskModal")).hide();
 });
@@ -122,6 +125,11 @@ document.getElementById("taskForm").addEventListener("submit", function (e) {
 function filterByCategory(category) {
   currentCategory = category;
   renderTable();
+}
+
+// Function to save todos to localStorage
+function saveTodos() {
+  localStorage.setItem('todos', JSON.stringify(todos));
 }
 
 // Initial render
